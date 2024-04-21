@@ -5,40 +5,28 @@
 </head>
 <body>
     <script>
-        class Example extends Phaser.Scene
-        {
-            preload ()
-            {
-                this.load.setBaseURL('https://labs.phaser.io');
-                this.load.image('sky', 'assets/skies/space3.png');
-                this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-                this.load.image('red', 'assets/particles/red.png');
+        class MelonMMOScene extends Phaser.Scene {
+            preload() {
+                this.load.tilemapCSV('map-base', 'assets/melon-mmo_base.csv');
+                this.load.tilemapCSV('map-physics', 'assets/melon-mmo_physics.csv');
+                this.load.image('tiles', 'assets/gfx/Overworld.png');
             }
-            create ()
-            {
-                this.add.image(400, 300, 'sky');
-                const particles = this.add.particles(0, 0, 'red', {
-                    speed: 100,
-                    scale: { start: 1, end: 0 },
-                    blendMode: 'ADD'
-                });
-                const logo = this.physics.add.image(400, 100, 'logo');
-                logo.setVelocity(100, 200);
-                logo.setBounce(1, 1);
-                logo.setCollideWorldBounds(true);
-                particles.startFollow(logo);
+            create() {
+                const mapBase = this.make.tilemap({ key: 'map-base', tileWidth: 16, tileHeight: 16 }),
+                    mapPhysics = this.make.tilemap({ key: 'map-physics', tileWidth: 16, tileHeight: 16 });
+                const tilesetBase = mapBase.addTilesetImage('tiles'),
+                    tilesetPhysics = mapPhysics.addTilesetImage('tiles');
+                const layerBase = mapBase.createLayer(0, tilesetBase, 0, 0),
+                    layerPhysics = mapPhysics.createLayer(0, tilesetPhysics, 0, 0);
             }
         }
         const game = new Phaser.Game({
             type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            scene: Example,
+            width: 960,
+            height: 640,
+            scene: MelonMMOScene,
             physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 200 }
-                }
+                default: 'arcade'
             }
         });
     </script>
